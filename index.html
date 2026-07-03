@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎉 Праздничный Геймерский Квест 🎉</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: rgba(20, 20, 20, 0.85);
+            padding: 30px;
+            border-radius: 20px;
+            border: 3px solid #ffd700;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        h2 { 
+            color: #ffd700; 
+            text-shadow: 2px 2px 4px #000;
+            font-size: 28px;
+        }
+
+        p { font-size: 18px; }
+
+        input[type="password"] {
+            padding: 12px;
+            font-size: 20px;
+            border-radius: 10px;
+            border: 2px solid #ffd700;
+            background: #fff;
+            color: #000;
+            outline: none;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #ff512f, #dd2476);
+            color: white;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(221, 36, 118, 0.5);
+        }
+
+        .btn:hover { 
+            transform: scale(1.05); 
+            box-shadow: 0 6px 20px rgba(221, 36, 118, 0.8);
+        }
+
+        .btn-option {
+            display: block;
+            width: 100%;
+            margin: 12px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #00d2ff;
+            color: #fff;
+        }
+
+        .btn-option:hover { 
+            background: rgba(0, 210, 255, 0.3); 
+            border-color: #ffd700;
+        }
+
+        .hidden { display: none; }
+
+        .hints { 
+            margin-top: 25px; 
+            border-top: 2px dashed #ffd700; 
+            padding-top: 20px; 
+        }
+
+        .hint-btn { 
+            background: linear-gradient(45deg, #11998e, #38ef7d); 
+            font-size: 16px;
+            padding: 10px 20px;
+            color: #000;
+        }
+
+        .qr-code { margin-top: 15px; }
+        .qr-code img { max-width: 200px; border-radius: 15px; border: 3px solid #fff; }
+        
+        .key-text {
+            font-size: 28px;
+            font-weight: bold;
+            color: #38ef7d;
+            margin: 20px 0;
+            padding: 20px;
+            background: #000;
+            border: 2px dashed #38ef7d;
+            border-radius: 15px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(56, 239, 125, 0.5);
+        }
+
+        #video-container video {
+            max-width: 100%;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 3px solid #ffd700;
+        }
+
+        .pulse {
+            animation: pulse-animation 2s infinite;
+        }
+
+        @keyframes pulse-animation {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Стиль для твоего личного сообщения */
+        .friend-message {
+            font-size: 18px;
+            line-height: 1.5;
+            color: #e0e0e0;
+            background: rgba(255, 255, 255, 0.07);
+            padding: 15px 20px;
+            border-radius: 12px;
+            border-left: 5px solid #ffd700;
+            margin: 25px 0;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen" class="container">
+        <h2>🎁 Праздничный Квест 🎁</h2>
+        <p>Введи секретный пароль, чтобы начать игру!</p>
+        <input type="password" id="password-input" placeholder="Пароль..." onkeydown="if(event.key === 'Enter') checkPassword()">
+        <br>
+        <button class="btn pulse" onclick="checkPassword()">Погнали! 🚀</button>
+    </div>
+
+    <div id="quiz-screen" class="container hidden">
+        <h2 id="question-title">Вопрос 1</h2>
+        <p id="question-text" style="font-size: 20px; font-weight: bold;"></p>
+        
+        <div id="video-container" class="hidden"></div>
+        
+        <div id="options-container">
+            </div>
+
+        <div class="hints">
+            <button class="btn hint-btn" id="btn-50" onclick="use5050()">Подсказка 50/50 ⚖️</button>
+            <button class="btn hint-btn" onclick="callFriend()">Звонок другу 📱</button>
+            
+            <div id="friend-hint" class="qr-code hidden">
+                <p>Нужна помощь? Сканируй QR или пиши сюда:</p>
+                <img src="image_cee8e5.jpg" alt="QR Code Звонок другу">
+                <p><a href="https://t.me/GIRABOYY" style="color: #ffd700; text-decoration: none; font-weight: bold; font-size: 20px;">@GIRABOYY</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="correct-screen" class="container hidden">
+        <h2>✅ Отличный ответ! ✅</h2>
+        <p>Ты стал на шаг ближе к главному призу.</p>
+        <button class="btn pulse" onclick="nextQuestion()">Следующий вопрос ➡️</button>
+    </div>
+
+    <div id="final-case-screen" class="container hidden">
+        <h2>🎉 ИДЕАЛЬНО! 🎉</h2>
+        <p>Ты прошел все испытания! Главный Мега-Кейс ждет тебя.</p>
+        <button class="btn pulse" style="font-size: 24px; padding: 20px 40px;" onclick="openCase()">ОТКРЫТЬ КЕЙС 🎁</button>
+    </div>
+
+    <div id="win-screen" class="container hidden">
+        <h2>🏆 ТВОЙ ПРИЗ 🏆</h2>
+        <p>Поздравляю с прохождением квеста! Забирай свой ключ:</p>
+        <div class="key-text" id="game-key"></div>
+        
+        <div class="friend-message">
+            💬 <b>От меня:</b> Это первая игра, которую я прошел в осознанном возрасте, и тебе прям очень советую ее пройти — это реально имба!
+        </div>
+
+        <p style="color: #ffd700; font-weight: bold; font-size: 22px;">🎈 ГГ ВП! Иди активируй! 🎈</p>
+    </div>
+
+    <script>
+        // ==========================================
+        // ТВОЙ ФИНАЛЬНЫЙ КЛЮЧ
+        // ==========================================
+        var finalKey = "PW967-8E787-84QPI"; 
+
+        // Вопросы
+        var questions = [
+            {
+                text: "Dota 2: Какой предмет дает иммунитет к большинству магических заклинаний на несколько секунд?",
+                options: ["Black King Bar (BKB)", "Manta Style", "Eul's Scepter of Divinity", "Aghanim's Scepter"],
+                correct: 0,
+                video: null
+            },
+            {
+                text: "CS 2: На какой карте официального соревновательного пула (Active Duty) находится позиция под названием «Пончик» (Donut)?",
+                options: ["Ancient", "Anubis", "Vertigo", "Mirage"],
+                correct: 0,
+                video: null
+            },
+            {
+                text: "Minecraft: На какое максимальное расстояние (в блоках) передается сигнал красного камня (Redstone) от обычного факела без использования повторителей?",
+                options: ["12 блоков", "14 блоков", "15 блоков", "16 блоков"],
+                correct: 2,
+                video: null
+            },
+            {
+                text: "Внимание на экран! Что кот и пёс сделали со своим обидчиком в конце видео?",
+                options: ["Простили и отпустили", "Устроили из него барбекю", "Заставили играть на саппорте в Доте", "Сдали в полицию"],
+                correct: 1,
+                video: "8174180567611.mp4"
+            }
+        ];
+
+        var currentQuestion = 0;
+        var hint50Used = false;
+
+        function checkPassword() {
+            var pass = document.getElementById('password-input').value;
+            pass = pass.trim(); 
+            
+            if (pass === '030710') {
+                document.getElementById('login-screen').classList.add('hidden');
+                loadQuestion();
+            } else {
+                alert('Неверный пароль! Попробуй еще раз.');
+            }
+        }
+
+        function loadQuestion() {
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            document.getElementById('correct-screen').classList.add('hidden');
+            document.getElementById('friend-hint').classList.add('hidden');
+            
+            var q = questions[currentQuestion];
+            document.getElementById('question-title').innerText = "🔥 Вопрос " + (currentQuestion + 1) + " из " + questions.length + " 🔥";
+            document.getElementById('question-text').innerText = q.text;
+            
+            var videoContainer = document.getElementById('video-container');
+            if (q.video) {
+                videoContainer.innerHTML = '<video src="' + q.video + '" controls></video>';
+                videoContainer.classList.remove('hidden');
+            } else {
+                videoContainer.innerHTML = '';
+                videoContainer.classList.add('hidden');
+            }
+            
+            var optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            for (var i = 0; i < q.options.length; i++) {
+                var btn = document.createElement('button');
+                btn.className = 'btn btn-option';
+                btn.innerText = q.options[i];
+                btn.id = 'opt-' + i;
+                (function(index) {
+                    btn.onclick = function() {
+                        checkAnswer(index);
+                    };
+                })(i);
+                optionsContainer.appendChild(btn);
+            }
+
+            if (!hint50Used) {
+                var btn50 = document.getElementById('btn-50');
+                btn50.disabled = false;
+                btn50.style.opacity = '1';
+                btn50.innerText = 'Подсказка 50/50 ⚖️';
+            }
+        }
+
+        function checkAnswer(selectedIndex) {
+            if (selectedIndex === questions[currentQuestion].correct) {
+                document.getElementById('quiz-screen').classList.add('hidden');
+                
+                var videoElement = document.querySelector('video');
+                if (videoElement) {
+                    videoElement.pause();
+                }
+
+                if (currentQuestion === questions.length - 1) {
+                    document.getElementById('final-case-screen').classList.remove('hidden');
+                } else {
+                    document.getElementById('correct-screen').classList.remove('hidden');
+                }
+            } else {
+                alert('Неправильный ответ! Подумай еще (или используй подсказки).');
+            }
+        }
+
+        function use5050() {
+            if (hint50Used) return;
+            
+            var correctIdx = questions[currentQuestion].correct;
+            var hiddenCount = 0;
+            
+            for (var i = 0; i < 4; i++) {
+                if (i !== correctIdx && hiddenCount < 2) {
+                    var el = document.getElementById('opt-' + i);
+                    if (el) el.style.display = 'none';
+                    hiddenCount++;
+                }
+            }
+            
+            hint50Used = true;
+            var btn50 = document.getElementById('btn-50');
+            btn50.disabled = true;
+            btn50.style.opacity = '0.5';
+            btn50.innerText = 'Использовано ❌';
+        }
+
+        function callFriend() {
+            document.getElementById('friend-hint').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            loadQuestion();
+        }
+
+        function openCase() {
+            document.getElementById('final-case-screen').classList.add('hidden');
+            document.getElementById('win-screen').classList.remove('hidden');
+            document.getElementById('game-key').innerText = finalKey;
+        }
+    </script>
+</body>
+</html>
